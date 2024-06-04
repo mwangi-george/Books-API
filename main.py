@@ -78,6 +78,11 @@ class BookUpdate(BaseModel):
 # Endpoints
 
 
+@app.get("/")
+def home():
+    return {"API Docs": "https://books-api-h9ac.onrender.com/docs"}
+
+
 @app.post("/books", response_model=Book)
 def create_book(book: Book, db: sqlite3.Connection = Depends(get_db)):
     cursor = db.cursor()
