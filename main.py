@@ -1,6 +1,9 @@
 from typing import List, Optional
 from pydantic import BaseModel
-from fastapi import FastAPI, HTTPException, Depends
+from fastapi import FastAPI, HTTPException, Depends, Request
+from fastapi.responses import HTMLResponse
+from fastapi.staticfiles import StaticFiles
+from fastapi.templating import Jinja2Templates
 import sqlite3
 
 
@@ -44,8 +47,14 @@ def init_db():
 # Initialize the database backend
 init_db()
 
-
+# Initialize application
 app = FastAPI()
+
+app.mount("/static", StaticFiles(directory="static"), name="static")
+
+
+templates = Jinja2Templates(directory="templates")
+
 
 DATABASE = 'books.db'
 
@@ -78,9 +87,12 @@ class BookUpdate(BaseModel):
 # Endpoints
 
 
-@app.get("/")
-def home():
-    return {"API Docs": "https://books-api-h9ac.onrender.com/docs"}
+@app.get("/", response_class=HTMLResponse)
+def home(request: Request):
+    return templates.TemplateResponse(
+        request=request, name="index.html"
+    )
+    # return {"API Docs": "https://books-api-h9ac.onrender.com/docs"}
 
 
 @app.post("/books", response_model=Book)
