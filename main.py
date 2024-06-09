@@ -150,6 +150,9 @@ def update_book(book_id: int, book: BookUpdate, db: sqlite3.Connection = Depends
     return {"id": updated_book[0], "title": updated_book[1], "author_id": updated_book[2], "publisher_id": updated_book[3], "published_date": updated_book[4]}
 
 
+# Delete endpoint
+
+
 @app.delete("/books/{book_id}", response_model=dict)
 def delete_book(book_id: int, db: sqlite3.Connection = Depends(get_db)):
     cursor = db.cursor()
